@@ -18,3 +18,8 @@ somarL (x:xs) = x + somarL xs
 
 juntar :: String -> String -> String
 juntar sx sy = sx ++ sy
+
+listarNum :: (Num a, Show a) => [a] -> String
+listarNum [] = ""
+listarNum [x] = show x
+listarNum (x:xs) = show x ++ ", " ++ listarNum xs
