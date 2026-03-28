@@ -35,11 +35,47 @@ exor :: Eq a => a -> a -> Bool
 exor x y | x == y = False
          | x /= y = True
 
-{-Escrever duas funções, x_maior que retorne o maior e x_menor que 
+{-6. Escrever duas funções, x_maior que retorne o maior e x_menor que 
 retorne o menor valor real, das raízes de uma equação do segundo grau.-}
 
-equacaoSeGrau :: Floating a => a -> a -> a -> [a]
+equacaoSeGrau :: (Fractional a, Floating a) => a -> a -> a -> [a]
 equacaoSeGrau a b c = [((-b) + sqrt (b*b -4 * a * c)) / (2*a), ((-b) - sqrt (b*b -4 * a * c)) / (2*a)]
 
 x_maior :: (Floating a, Ord a) => a -> a -> a -> a
 x_maior a b c = maximum (equacaoSeGrau a b c)
+
+x_menor :: (Floating a, Ord a) => a -> a -> a -> a
+x_menor a b c = minimum (equacaoSeGrau a b c)
+
+{-7. Criar funções que calculam a soma dos números entre n1 e n2, incluindo 
+ - e excluindo os limites.-}
+
+somar_ni :: (Enum a, Num a) => a -> a -> a
+somar_ni x y = sum [x .. y]
+
+somar_ne :: (Enum a, Num a) => a -> a -> a
+somar_ne x y = sum [(x+1) .. (y-1)]
+
+{-8. Dados três números n1, n2 e n3, encontrar os múltiplos de n3 que se 
+ - encontram no  intervalo [n1,n2] (inclusivo).-}
+
+verify_mult :: Int -> Int -> Bool
+verify_mult x y = (x `mod` y) == 0
+
+multiplos :: Int -> Int -> Int -> [Int]
+multiplos x y z = [a | a <- [x .. y], verify_mult a z]
+
+{-9. Utilizando a função sum, faça uma função que calcule a multiplicação 
+ - entre dois números quaisquer, considerando números positivos e 
+ - negativos. Não é permitido usar a operação de multiplicação.-}
+
+altMult :: Int -> Int -> Int 
+altMult x y | y >= 0 = sum [x | _ <- [1 .. y]]
+            | otherwise = sum [(-x) | _ <- [1 .. (abs y)]]
+
+{-10. Implemente a função mod2, que retorna o resto de uma divisão de 
+ - inteiros. OBS: não é permitido usar a função mod nem a função rem 
+ - da biblioteca.-}
+
+mod2 :: Int -> Int -> Int
+mod2 x y = x - ((div x y)^2)
