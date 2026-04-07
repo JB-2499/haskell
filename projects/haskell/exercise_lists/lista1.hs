@@ -79,3 +79,98 @@ altMult x y | y >= 0 = sum [x | _ <- [1 .. y]]
 
 mod2 :: Int -> Int -> Int
 mod2 x y = x - ((div x y)^2)
+
+{-11.-}
+
+sequenciaSqrt :: Int -> Double
+sequenciaSqrt 1 = sqrt 6
+sequenciaSqrt n | n <= 0 = 0
+                | otherwise = sqrt (6 + sequenciaSqrt (n - 1))
+
+{-12. Implementar a fórmula que indica de quantas maneiras é 
+ - possível escolher n objetos de uma coleção original de m 
+ - objetos, onde m >= n.-}
+
+fatorial :: Int -> Int
+fatorial 0 = 1
+fatorial n = n * (fatorial (n - 1))
+
+colecao :: [a] -> Int -> Int
+colecao _ 0 = 1
+colecao [] _ = 0
+colecao m n | (length m) < n = error "Erro, m deve ser maior que n!"
+            | otherwise = div (fatorial m') (fatorial n * fatorial (m' - n))
+            where m' = length m
+
+{-13. Defina uma função que, dada uma lista numérica, retorne 
+ - uma tupla, que contenha o maior da lista bem como índice 
+ - na lista.-}
+
+maiorTp :: [Int] -> (Int, Int)
+maiorTp [] = error "A lista não pode estar vazia!"
+maiorTp (x:xs) = aux xs 1 x 0
+    where
+        aux [] _ maiorValor idxMaiorValor = (maiorValor,idxMaiorValor)
+        aux (y:ys) i atualMaior idxAtualMaior
+            | y > atualMaior = aux ys (i + 1) y i
+            | otherwise = aux ys (i+1) atualMaior idxAtualMaior
+
+{-14. Defina uma função que converta uma lista de dígitos 
+ - (unitários, 0 a 9) em uma outra lista, que é a sua tradução 
+ - em String-}
+
+numerais = [0,1,2,3,4,5,6,7,8,9]
+
+numeraisStr = ["zero","um","dois","tres","quatro","cinco","seis","sete","oito","nove"]
+
+dicionario :: [(Int,String)]
+dicionario = zip numerais numeraisStr
+
+tradNumStr :: [Int] -> [String]
+tradNumStr [] = []
+tradNumStr (x:xs) | x < 0 || x > 9 = error "Erro! Só existem 10 numerais (0 a 9)."
+                  | otherwise = snd (dicionario !! x) : tradNumStr xs
+
+{-15. Construa uma função del_posicao_n :: [Int] -> Int -> [Int] 
+ - em que dada uma lista de inteiros e a posição de um 
+ - elemento qualquer, retorne uma nova lista sem aquele 
+ - elemento da n-ésima posição.-}
+
+delPosicao :: [Int] -> Int -> [Int]
+delPosicao [] _ = []
+delPosicao (x:xs) 0 = xs
+delPosicao (x:xs) i = x : delPosicao xs (i - 1)
+
+{-16. Construa uma função inserir_posicao_x :: [Int] -> Int 
+ - -> Int -> [Int] em que, dada uma lista de inteiros, 
+ - uma posição e um elemento a ser inserido, retorne uma 
+ - nova lista com aquele elemento na nésima posição.-}
+
+inserir_posicao :: [Int] -> Int -> Int -> [Int]
+inserir_posicao [] _ num  = [num]
+inserir_posicao lista 0 num = num : lista
+inserir_posicao (x:xs) idx num = x : inserir_posicao xs (idx - 1) num
+
+{-17. Defina uma função que retorne o valor da n-ésima 
+ - posição de uma lista.-}
+
+retN :: [a] -> Int -> a
+retN [] _ = error "Erro! A lista não pode estar vazia."
+retN (x:xs) n | n < 0 = error "Erro! Indices negativos não são permitidos."
+              | n == 0 = x
+              | otherwise = retN xs (n - 1)
+
+{-18. Dadas duas listas ordenadas como entrada, faça 
+ - uma função merge, que une as duas listas.-}
+
+ordenar :: Ord a => [a] -> [a]
+ordenar [] = []
+ordenar [x] = [x]
+ordenar (x:xs) | x > xs !! 0 = ordenar (xs ++ [x])
+               | otherwise = (x : ordenar (xs))
+
+mergeList :: Ord a => [a] -> [a] -> [a]
+mergeList [] y = y : []
+mergeList x [] = x : []
+mergeList x y | (x !! 0) > (y !! ((length y) - 1) = y ++ x
+              | (y !! 0) > (x !! ((length x) - 1) = x ++ y
