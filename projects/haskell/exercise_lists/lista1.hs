@@ -1,3 +1,6 @@
+import Data.List (group)
+import Data.Char (isDigit)
+
 {-1. Fornecidos três valores a, b e c, escreva uma função
  que retorne quantos dos três são iguais. A resposta pode 
  ser 3 (todos iguais), 2 (dois iguais e o terceiro diferente) 
@@ -165,12 +168,48 @@ retN (x:xs) n | n < 0 = error "Erro! Indices negativos não são permitidos."
 
 ordenar :: Ord a => [a] -> [a]
 ordenar [] = []
-ordenar [x] = [x]
-ordenar (x:xs) | x > xs !! 0 = ordenar (xs ++ [x])
-               | otherwise = (x : ordenar (xs))
+ordenar (x:xs) = inserir x (ordenar xs)
+
+inserir :: Ord a => a -> [a] -> [a]
+inserir x [] = [x]
+inserir x (y:ys) | x <= y = x : y : ys
+                 | otherwise = y : inserir x ys
 
 mergeList :: Ord a => [a] -> [a] -> [a]
-mergeList [] y = y : []
-mergeList x [] = x : []
-mergeList x y | (x !! 0) > (y !! ((length y) - 1) = y ++ x
-              | (y !! 0) > (x !! ((length x) - 1) = x ++ y
+mergeList [] y = y ++ []
+mergeList x [] = x ++ []
+mergeList x y = ordenar (x ++ y)
+
+{-19. Implemente uma função que receba duas listas 
+ - de inteiros sem repetição, e retorne uma terceira 
+ - lista que contenha somente números que estejam 
+ - nas duas listas dadas.-}
+
+repeticao :: [Int] -> [Int] -> [Int]
+repeticao [] _ = []
+repeticao (x:xs) l | x `elem` l = x : repeticao xs l
+                   | otherwise = repeticao xs l
+
+{-20. Crie uma função que faça uma compressão sobre 
+ - uma sequência de caracteres iguais, substitua a 
+ - sequência por !na, onde n é o número de vezes que 
+ - o caractere a é repetido. Observe que só devem ser 
+ - comprimidas sequências de tamanhos maiores que 3.-}
+
+comprimir :: String -> String
+comprimir s = concatMap formatar (group s)
+    where
+        formatar :: String -> String
+        formatar grupo | length grupo > 3 = "!" ++ show (length grupo) ++ [head grupo]
+                       | otherwise = grupo
+
+{-21. Implemente uma função que descomprima o texto 
+ - resultante da função anterior.-}
+
+descomp :: String -> String
+descomp [] = []
+descomp ('!':xs) = 
+    let (numStr, c:resto) = span isDigit xs
+        n = read numStr :: Int
+    in replicate n c ++ descomp resto
+descomp (x:xs) = x : descomp xs
