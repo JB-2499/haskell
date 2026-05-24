@@ -62,6 +62,19 @@ perfeitos n = [x | x <- [1 .. (n - 1)], sum (fatores x) == x]
  - com dois geradores, pode ser representada usando duas compreensões de lista, 
  - cada uma com apenas um gerador. Dica: Procure usar a função concat.-}
 
-suc :: (Eq a, Num a) => a -> a -> a
-suc x 0 = x
-suc x y = x + (suc 1 (y - 1))
+comprehend = [[(x,y) | x <- [1,2]] | y <- [3,4]]
+
+{-8.-}
+
+buscar :: Eq a => a -> [(a,b)] -> [b]
+buscar k xs = [v | (k', v) <- xs, k == k']
+
+posicoes :: Eq a => a -> [a] -> [Int]
+posicoes x xs = buscar x (zip xs [0..])
+
+{-9. Escreva a função capaz de calcular o produto escalar de duas listas de inteiros 
+ - xs e ys de tamanho n, que é dado pelo produto dos inteiros em posições 
+ - correspondentes. Dica: Procure usar a função zip.-}
+
+escalar :: [Int] -> [Int] -> Int
+escalar xs ys = sum [x * y| (x,y) zip xs ys]
