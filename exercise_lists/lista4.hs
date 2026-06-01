@@ -35,3 +35,36 @@ posicao x (y:ys) | x == 0 = y
 posicao' :: Eq a => Int -> [a] -> a
 posicao' _ [] = error "Lista vazia."
 posicao' k xs = head [v | (k',v) <- zip [0..] xs, k == k']
+
+{-3. Defina uma função que repita as ocorrências até um determinado valor, no 
+ - formato de uma lista, tal que (NÃO PODE USAR O replicate):
+Exemplo: repete 4 
+Saída 1: [ [4,4,4,4], [3,3,3], [2,2], [1] ]
+Saída 2: [4,4,4,4,3,3,3,2,2,1]
+-}
+
+replicar :: Int -> [Int]
+replicar 0 = []
+replicar x = [x | y <- [1 .. x]]
+
+repetir :: Int -> [Int]
+repetir 0 = []
+repetir x = replicar x ++ repetir (x-1)
+
+repetir' :: Int -> [[Int]]
+repetir' 0 = []
+repetir' x = replicar x :  repetir' (x-1)
+
+{-4. Construa uma função que cheque se o conteúdo de uma lista é um palíndromo:
+palindromo [1,2,3,4,5] = False
+palindromo [1,2,3,2,1] = True
+palindromo [1,2,2,1] = True
+-}
+
+reversa :: [a] -> [a]
+reversa [] = []
+reversa [x] = [x]
+reversa xs = xs !! (length xs - 1) : reversa (take (length xs - 1) xs)
+
+palindromo :: [Int] -> Bool
+palindromo xs = reversa xs == xs
