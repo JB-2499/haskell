@@ -141,3 +141,81 @@ tirawhile :: (a -> Bool) -> [a] -> [a]
 tirawhile _ [] = []
 tirawhile func (x:xs) | func x = tirawhile func xs
                       | otherwise = x:xs
+
+{-7. Redefina as funções map e filter usando foldr.-}
+
+-- a) Recursiva
+mapear :: (a -> b) -> [a] -> [b]
+mapear _ [] = []
+mapear func (x:xs) = func x : (mapear func xs)
+
+-- a) Foldr
+maps :: (a -> b) -> [a] -> [b]
+maps f = foldr (\x acc -> f x : acc) []
+
+-- b) Recursiva
+filtrar :: (a -> Bool) -> [a] -> [a]
+filtrar _ [] = []
+filtrar func (x:xs) | func x = x : (filtrar func xs)
+                    | otherwise = filtrar func xs
+
+-- b) Foldr
+filtr :: (a -> Bool) -> [a] -> [a]
+filtr func = foldr aux []
+        where
+            aux x acc | func x = x : acc
+                      | otherwise = acc
+
+{-8. Usando foldl, defina a função dec2int :: [Int] -> Int que converte uma lista de inteiros em um inteiro.
+Exemplo: dec2int [2,3,4,5] deve retornar 2345-}
+
+-- Auxiliar
+ler :: [Int] -> String
+ler [] = ""
+ler (x:xs) = show x ++ (ler xs)
+
+-- Principal
+dec2int :: [Int] -> Int
+dec2int [] = 0
+dec2int xs = read (ler xs)
+
+-- Foldl
+dectoint :: [Int] -> Int
+dectoint = foldl f 0
+    where
+        f acc d = acc * 10 + d
+
+{-9. Considere a função unfold que encapsula o padrão recursivo definido abaixo
+unfold p h t x 
+       | p x = []
+       | otherwise = h x : unfold p h t (t x)
+Isto é, a função unfold produz uma lista vazia se o predicado é verdadeiro para o argumento passado em x, caso 
+contrário, produz uma lista não vazia aplicando h a x, para formar a cabeça, e a função t aplicada a x que é 
+processado recursivamente usando as mesmas regras, produzindo a cauda da lista. Como exemplo, podemos definir uma 
+função int2bin, que converte um número inteiro em uma lista de bits:
+int2bi n = reverse $ unfold (== 0) (`mod` 2) (`div` 2)
+Redefina as funções map f e iterate f da biblioteca padrão usando a função unfold.-}
+
+-- Base
+unfold p h t x | p x = []
+               | otherwise = h x : unfold p h t (t x)
+
+-- Map
+mapun f = unfold null (f . head) tail
+
+-- Iterate
+iterar f = unfold (const False) id f
+
+{-10. Defina a função altMap :: (a -> b) -> (a -> b) -> [a] -> [b] que aplica de forma alternada as duas funções que recebe como argumento a elementos sucessivos em uma lista.-}
+
+altmap :: (a -> b) -> (a -> b) -> [a] -> [b]
+altmap f1 f2 [] = []
+altmap f1 f2 (x:xs) = f1 x : altmap f2 f1 xs
+
+{-11. Sem olhar nas definições do Prelude, defina uma função de alta ordem chamada curry que converte uma função em um par (tupla) em uma versão currificada. Defina também uma função chamada uncurry que converte uma função currificada para dois argumentos em uma função que recebe um par (tupla).-}
+
+curiar :: ((a,b) -> c) -> a -> b -> c
+curiar func x y = func (x,y)
+
+uncuriar :: (a -> b -> c) -> (a,b) -> c
+uncuriar func (x,y) = func x y
